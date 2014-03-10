@@ -46,7 +46,7 @@ With your project ready to go, run the `gulp` command in your project root. This
 
 In order to avoid redefinition problems, use modules for your code and tests. Please see [jlbox.jl](src/templates/jlbox.jl) and [jlbox_test.jl](src/templates/jlbox_test.jl) for examples.
 
-For more information, please see my [blog post](http://techstrings.com/).
+For more information, please see my [blog post](http://techstrings.com/2014/02/28/realtime-testing-with-julia-gulpjs-zmq/).
 
 # Commands
 
