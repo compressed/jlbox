@@ -17,7 +17,7 @@
     "jlbox": "./bin/jlbox.js"
   },
   "scripts" : {
-    "test": "mocha"
+    "test": "mocha --reporter mocha-better-spec-reporter"
   },
   "dependencies": {
     "zmq": "~2.6.0",

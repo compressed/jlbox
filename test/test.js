@@ -99,7 +99,7 @@ describe('jlbox', function() {
     });
 
     it('should restart julia when there is a syntax error', function(done) {
-      this.timeout(5000);
+      this.timeout(10000);
       var content = 'module SampleTest\n' +
             'include("$(pwd())/test/helper.jl")\n' +
             'reload("$(pwd())/src/Sample.jl")\n' +
@@ -114,7 +114,7 @@ describe('jlbox', function() {
         return setTimeout(function() {
           should.exist(hook.captured().match(/ZMQ bound/));
           return done();
-        }, 4000);
+        }, 8000);
       });
     });
 
@@ -143,7 +143,10 @@ describe('jlbox', function() {
     // kill julia process
     ps.lookup({command: 'julia', arguments: [ '--color', 'gulp.jl' ]}, function(err,res) {
       if (err) return done(err);
-      process.kill(res[0].pid, 'SIGINT');
+      // if julia process remains... kill it
+      if (res && res[0]) {
+        process.kill(res[0].pid, 'SIGINT');
+      }
       // clean-up project dir
       return rimraf(outpath, done);
     });
