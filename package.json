@@ -1,0 +1,37 @@
+{
+  "name": "jlbox",
+  "version": "0.1.0",
+  "keywords": [
+    "julia",
+    "gulp",
+    "watch"
+  ],
+  "author": "Christopher Brickley <brickley@gmail.com> (http://techstrings.com)",
+  "description": "bootstrap julia projects, provide a watching mechanism to run tests for modified julia files",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/compressed/jlbox.git"
+  },
+  "license": "MIT",
+  "bin": {
+    "jlbox": "./bin/jlbox.js"
+  },
+  "scripts" : {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "zmq": "~2.6.0",
+    "gulp-util": "~2.2.14",
+    "gulp": "~3.5.2",
+    "async": "~0.2.10",
+    "mkdirp": "~0.3.5",
+    "chalk": "~0.4.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.17.1",
+    "should": "~3.1.3",
+    "mocha-better-spec-reporter": "0.0.2",
+    "rimraf": "^2.2.6",
+    "ps-node": "0.0.3"
+  }
+}
