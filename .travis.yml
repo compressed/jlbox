@@ -15,5 +15,3 @@ before_install:
   - sudo apt-get update -qq -y
   - sudo apt-get install libzmq3-dev libpcre3-dev julia -y
   - julia -e 'Pkg.add("ZMQ"); Pkg.add("FactCheck")'
-script:
-  - julia -e 'using Watch; @assert isdefined(:Watch); @assert typeof(Watch) === Module'
