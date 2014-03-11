@@ -6,6 +6,7 @@ var spawn     = require('child_process').spawn;
 var fs        = require('fs');
 var file_path;
 var sock;
+var child;
 
 // watch all jl files in tests and scripts dirs
 var paths     = {
@@ -15,7 +16,7 @@ var paths     = {
 
 var setupJuliaProcess = function() {
   sock            = zmq.socket('req');
-  var child       = spawn("julia", ["--color", "gulp.jl"], {cwd: process.cwd()});
+  child           = spawn("julia", ["--color", "gulp.jl"], {cwd: process.cwd()});
   var ZMQStartReg = /ZMQ bound to endpoint: (.+)/;
 
   child.stdout.setEncoding('utf8');
@@ -79,6 +80,12 @@ watcher.on('change', function(event){
   else {
     file_path = "";
   }
+});
+
+// ensure julia process is closed at termination
+process.on('SIGINT', function() {
+  if (child) child.kill('SIGINT');
+  process.exit();
 });
 
 gulp.task('default', ['juliaZMQ']);
