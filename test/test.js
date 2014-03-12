@@ -1,13 +1,15 @@
 'use strict';
-var should    = require('should');
-var mkdirp    = require('mkdirp');
-var cp        = require('child_process');
-var path      = require('path');
-var rimraf    = require('rimraf');
-var ps        = require('ps-node');
-var outpath   = path.join(__dirname, '/project');
-var jlboxPath = path.join(__dirname, '../bin/jlbox.js');
-var fs        = require('fs');
+var should       = require('should');
+var mkdirp       = require('mkdirp');
+var cp           = require('child_process');
+var path         = require('path');
+var rimraf       = require('rimraf');
+var outpath      = path.join(__dirname, '/project');
+var jlboxPath    = path.join(__dirname, '../bin/jlbox.js');
+var fs           = require('fs');
+var events       = require('events');
+var jlboxEmitter = new events.EventEmitter();
+var child;
 require('mocha');
 
 describe('jlbox', function() {
@@ -20,14 +22,13 @@ describe('jlbox', function() {
       this.timeout(60000);
       cp.exec(jlboxPath + ' init', {cwd: outpath}, function(err) {
         if (err) return done(err);
-        console.log(outpath);
-        should.exist(path.join(outpath, 'test'));
-        should.exist(path.join(outpath, 'src'));
-        should.exist(path.join(outpath, 'gulpfile.js'));
-        should.exist(path.join(outpath, 'gulp.jl'));
-        should.exist(path.join(outpath, 'package.json'));
-        should.exist(path.join(outpath, 'node_modules'));
-        should.exist(path.join(outpath, 'test/helper.jl'));
+        fs.existsSync(path.join(outpath, 'test')).should.be.true;
+        fs.existsSync(path.join(outpath, 'src')).should.be.true;
+        fs.existsSync(path.join(outpath, 'gulpfile.js')).should.be.true;
+        fs.existsSync(path.join(outpath, 'gulp.jl')).should.be.true;
+        fs.existsSync(path.join(outpath, 'package.json')).should.be.true;
+        fs.existsSync(path.join(outpath, 'node_modules')).should.be.true;
+        fs.existsSync(path.join(outpath, 'test/helper.jl')).should.be.true;
         return done();
       });
     });
@@ -35,14 +36,14 @@ describe('jlbox', function() {
     it('should bootstrap module files via module command', function(done) {
       cp.exec(jlboxPath + ' module Sample', {cwd: outpath}, function(err) {
         if(err) return done(err);
-        should(fs.existsSync(path.join(outpath, 'src/Sample.jl'))).be.true;
-        should.exist(path.join(outpath, 'src/Sample.jl'));
-        should.exist(path.join(outpath, 'test/Sample_test.jl'));
+        fs.existsSync(path.join(outpath, 'src/Sample.jl')).should.be.true;
+        fs.existsSync(path.join(outpath, 'src/Sample.jl')).should.be.true;
+        fs.existsSync(path.join(outpath, 'test/Sample_test.jl')).should.be.true;
         return done();
       });
     });
   });
-  var child;
+
   describe('jlbox watch', function() {
     before(function(done) {
       this.timeout(15000);
@@ -53,11 +54,24 @@ describe('jlbox', function() {
         data = data.trim();
         if (data) {
           console.log(data);
-          if (data.match(/.*Waiting for changes...*/) && count === 0) {
-            count += 1;
-            done();
+          if (data.match(/Waiting for changes/)) {
+            // if it's the first time, then call done
+            if (count === 0) {
+              count += 1;
+              done();
+            }
+            // otherwise emit an event that the test should list for
+            else {
+              jlboxEmitter.emit('jlbox:done', true);
+            }
           }
         }
+      });
+
+      child.stderr.setEncoding('utf8');
+      child.stderr.on('data', function(data) {
+        console.log('err');
+        console.log(data);
       });
     });
 
@@ -70,13 +84,21 @@ describe('jlbox', function() {
       hook.unhook();
     });
 
+    // clean up child process and folder at the end
+    after(function(done) {
+      child.kill('SIGINT');
+      return rimraf(outpath, done);
+    });
+
+    // NOTE: use different file names for each test, otherwise gulp/gaze will think they are the same event, given they happen so quickly, and ignore one.
+    // alternatively, you can use setTimeout on each test of about 1000ms if you want to modify the same file twice
     it('should re-run test when module is changed', function(done) {
       fs.writeFile(path.join(outpath, '/src/Sample.jl'), "module Sample\n\nend\n", function(err) {
         if (err) return done(err);
-        return setTimeout(function() {
+        return jlboxEmitter.once('jlbox:done', function() {
           should.exist(hook.captured().match(/0 facts verified/));
           return done();
-        }, 1000);
+        });
       });
     });
 
@@ -91,30 +113,27 @@ describe('jlbox', function() {
             'end # module SampleTest\n';
       fs.writeFile(path.join(outpath, '/test/Sample_test.jl'), content, function(err) {
         if (err) return done(err);
-        return setTimeout(function() {
+        return jlboxEmitter.once('jlbox:done', function() {
           should.exist(hook.captured().match(/1 fact verified/));
           return done();
-        }, 1000);
+        });
       });
     });
 
     it('should restart julia when there is a syntax error', function(done) {
-      this.timeout(10000);
-      var content = 'module SampleTest\n' +
+      this.timeout(8000);
+      var content = 'module SampleTest2\n' +
             'include("$(pwd())/test/helper.jl")\n' +
-            'reload("$(pwd())/src/Sample.jl")\n' +
-            'using Sample\n' +
-            'facts("Sample") do\n' +
+            'facts("Sample2") do\n' +
             '@fact 1 => 1:\n' +
             'end\n' +
-            'end # module SampleTest\n';
-      fs.writeFile(path.join(outpath, '/test/Sample_test.jl'), content, function(err) {
+            'end # module Sample2Test\n';
+      fs.writeFile(path.join(outpath, '/test/Sample_test2.jl'), content, function(err) {
         if (err) return done(err);
-
-        return setTimeout(function() {
+        return jlboxEmitter.once('jlbox:done', function() {
           should.exist(hook.captured().match(/ZMQ bound/));
           return done();
-        }, 8000);
+        });
       });
     });
 
@@ -136,19 +155,5 @@ describe('jlbox', function() {
         }
       };
     }
-  });
-
-  after(function(done) {
-    child.kill('SIGINT');
-    // kill julia process
-    ps.lookup({command: 'julia', arguments: [ '--color', 'gulp.jl' ]}, function(err,res) {
-      if (err) return done(err);
-      // if julia process remains... kill it
-      if (res && res[0]) {
-        process.kill(res[0].pid, 'SIGINT');
-      }
-      // clean-up project dir
-      return rimraf(outpath, done);
-    });
   });
 });
