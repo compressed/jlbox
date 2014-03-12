@@ -35,11 +35,11 @@ The `-g` flag will make the `jlbox` binary available from your command line.
 # Workflow
 
 ```shell
-mkdir my_project
-cd my_project
-jlbox init
-jlbox module Sample
-gulp
+> mkdir my_project
+> cd my_project
+> jlbox init
+> jlbox module Sample
+> gulp
 ```
 
 With your project ready to go, run the `gulp` command in your project root. This command will start watching files in in `src/` and `test/` directories. When a source file is modified, it will look in the `test/` folder for corresponding file `filename_test.jl`. When a test file is modified, it will re-run the tests in that file.
@@ -55,7 +55,7 @@ For more information, please see my [blog post](http://techstrings.com/2014/02/2
 Running `jlbox init` will setup your project for watching julia files. It should be run in your project root. It does a few things:
 
 - Makes `test/` and `src/`' folders
-- Creates a `gulpfile.js` and `gulp.jl` file
+- Creates a [`gulpfile.js`](src/gulpfile.js) and [`gulp.jl`](src/gulp.jl) file
 - Creates a `package.json` file
 - Uses npm to install: gulp, gulp-util, and zmq node packages
 
