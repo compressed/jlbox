@@ -121,7 +121,7 @@ describe('jlbox', function() {
     });
 
     it('should restart julia when there is a syntax error', function(done) {
-      this.timeout(8000);
+      this.timeout(15000);
       var content = 'module SampleTest2\n' +
             'include("$(pwd())/test/helper.jl")\n' +
             'facts("Sample2") do\n' +
