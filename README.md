@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/compressed/jlbox.png)](https://travis-ci.org/compressed/jlbox)
 
-jlbox uses node.js to provide a mechanism for automatically reloading julia source and test files via gulp.js and a ZMQ socket. The tests are assumed to be using the [FactCheck.jl](https://github.com/zachallaun/FactCheck.jl) package. jlbox will even restart your julia process if you manage to write code that crashes it!
+jlbox uses node.js to provide a mechanism for automatically reloading julia source and test files via [gulp.js](http://gulpjs.com/) and a ZMQ socket. The tests are assumed to be using the [FactCheck.jl](https://github.com/zachallaun/FactCheck.jl) package. jlbox will even restart your julia process if you manage to write code that crashes it!
 
 jlbox will also stub out module/test file pairs.
 
@@ -61,7 +61,7 @@ Running `jlbox init` will setup your project for watching julia files. It should
 
 ## module
 
-Running `jlbox module Simple` will make two files `src/Simple.jl` and `test/Simple_test.jl`. The files will be stubbed out and include the basics for
+Running `jlbox module Simple` will make two files: `src/Simple.jl` and `test/Simple_test.jl`. The files will be stubbed out and include a module-based setup for you to begin coding and testing.
 
 # Contributing
 
