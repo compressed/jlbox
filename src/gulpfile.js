@@ -62,7 +62,7 @@ gulp.task('juliaZMQ', function(){
 
 var watcher = gulp.watch([paths.tests, paths.scripts], ['juliaZMQ']);
 // regex to match any jl files in src dir
-var re = new RegExp("(.*"+path.sep+")src"+path.sep+"(.+)\.jl");
+var re = new RegExp("(.*\\"+path.sep+")src\\"+path.sep+"(.+)\.jl");
 
 watcher.on('change', function(event){
   if (event.type !== 'deleted') {

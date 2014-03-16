@@ -7,6 +7,7 @@ var async  = require('async');
 var mkdirp = require('mkdirp');
 var chalk  = require('chalk');
 var cp     = require('child_process');
+var path   = require('path');
 var JLBOX  = 'JLBOX_MODULE';
 
 function printHelp() {
@@ -27,19 +28,19 @@ function initJulia(callback) {
     },
     // add test dir and helper file
     function(cb) {
-      console.log(chalk.cyan('create:') + ' test/' );
+      console.log(chalk.cyan('create:') + ' test' + path.sep);
       mkdirp(process.cwd()+'/test', function(err) {
         if (err) {
           cb(err);
         }
         else {
-          console.log(chalk.cyan('create:')+' test/helper.jl');
+          console.log(chalk.cyan('create:')+' test'+path.sep+'helper.jl');
           copyFile(__dirname+'/../src/templates/helper.jl', process.cwd()+'/test/helper.jl', cb);
         }
       });
     },
     function(cb) {
-      console.log(chalk.cyan('create:') + ' src/' );
+      console.log(chalk.cyan('create:') + ' src' + path.sep);
       mkdirp(process.cwd()+'/src', cb);
     },
     // install gulp and zmq node packages
@@ -99,11 +100,11 @@ function setupModule(moduleName, cb) {
   // setup module file
   async.parallel([
     function(cb2) {
-      console.log(chalk.cyan('create: ')+process.cwd()+'/src/'+moduleName+'.jl');
+      console.log(chalk.cyan('create: ')+path.normalize(process.cwd()+'/src/'+moduleName+'.jl'));
       copyReplaceFile(__dirname+'/../src/templates/jlbox.jl', process.cwd()+'/src/'+moduleName+'.jl', moduleName, cb2);
     },
     function(cb2) {
-      console.log(chalk.cyan('create: ')+ process.cwd()+'/test/'+moduleName+'_test.jl');
+      console.log(chalk.cyan('create: ')+path.normalize(process.cwd()+'/test/'+moduleName+'_test.jl'));
       copyReplaceFile(__dirname+'/../src/templates/jlbox_test.jl', process.cwd()+'/test/'+moduleName+'_test.jl', moduleName, cb2);
     }
   ],function(err, res) {
