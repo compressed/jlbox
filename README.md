@@ -8,13 +8,6 @@ jlbox will also stub out module/test file pairs.
 
 # Dependencies
 
-Install node and ZMQ. On OS X, I use [homebrew](http://brew.sh/):
-
-```shell
-brew install node
-brew install zmq
-```
-
 In julia, ensure you have FactCheck.jl and ZMQ.jl packages installed:
 
 ```julia
@@ -22,15 +15,37 @@ Pkg.add("ZMQ")
 Pkg.add("FactCheck")
 ```
 
-# Install
+Install nodejs and ZMQ
+## OS X
+I use [homebrew](http://brew.sh/):
+
+```shell
+brew install node
+brew install zmq
+```
+
+## Windows
+
+For windows there were several things I needed to do (if you already have node.js and can build things via node-gyp you can skip these steps):
+
+1. Install [chocolatey](https://chocolatey.org/)
+1. Install node `cinst nodejs.install`
+1. Install [zmq windows client](http://zeromq.org/intro:get-the-software)
+1. Satisfy the node-gyp build [dependencies](https://github.com/TooTallNate/node-gyp/wiki/Visual-Studio-2010-Setup). FYI - I wasn't able to complete step 4 on XP (said Windows SDK 7.1 not found, but compiling still worked for me)
+1. Make sure `julia` binary is in your PATH. When using the prepackaged binary I needed to copy `julia-readline.exe` as `julia.exe` (from the /bin folder) and add that location (including the bin dir) to my PATH. Validate that typing `julia` on the command line opens the julia REPL.
+
+Note: you may need to restart a few times (I did) to complete all the dependencies.
+
+# Install jlbox
 
 Use npm to install:
 
 ```shell
+npm install -g gulp
 npm install -g jlbox
 ```
 
-The `-g` flag will make the `jlbox` binary available from your command line.
+The `-g` flag will make the `jlbox` and `gulp` binaries available from your command line.
 
 # Workflow
 

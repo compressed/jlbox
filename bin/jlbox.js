@@ -79,8 +79,16 @@ function initJulia(callback) {
 }
 
 function spawnNPM(app, cb) {
-  var args  = ['install', app, '--save-dev'];
-  var child = cp.spawn('npm', args, {cwd: process.cwd(), stdio: 'inherit'});
+  var args;
+  var child;
+  if (/^win/.test(process.platform)) {
+    args  = ['/S', '/C', 'npm', 'install', app, '--save-dev'];
+    child = cp.spawn('cmd', args, {cwd: process.cwd(), stdio: 'inherit'});
+  }
+  else {
+    args  = ['install', app, '--save-dev'];
+    child = cp.spawn('npm', args, {cwd: process.cwd(), stdio: 'inherit'});
+  }
 
   child.on('close', function(data) {
     cb(null);
