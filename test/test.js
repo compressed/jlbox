@@ -20,8 +20,9 @@ describe('jlbox', function() {
   describe('jlbox commands', function() {
     it('should bootstrap project via init command', function(done) {
       this.timeout(60000);
-      cp.exec(jlboxPath + ' init', {cwd: outpath}, function(err) {
+      cp.exec(jlboxPath + ' init', {cwd: outpath}, function(err, stdout) {
         if (err) return done(err);
+        console.log(stdout);
         fs.existsSync(path.join(outpath, 'test')).should.be.true;
         fs.existsSync(path.join(outpath, 'src')).should.be.true;
         fs.existsSync(path.join(outpath, 'gulpfile.js')).should.be.true;

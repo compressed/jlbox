@@ -39,22 +39,32 @@ function initJulia(callback) {
       });
     },
     function(cb) {
+      console.log(chalk.cyan('create:') + ' src/' );
       mkdirp(process.cwd()+'/src', cb);
     },
     // install gulp and zmq node packages
     function(cb) {
-      mkdirp(process.cwd()+'/node_modules', function(err, res) {
-        if (err) return cb(err);
-        console.log(chalk.cyan('Installing npm modules: zmq, gulp, gulp-util'));
-        return fs.writeFile(process.cwd()+'/package.json',"{\n}\n", 'utf8', function(err) {
-          if (err) return cb(err);
-          return async.map(['zmq', 'gulp', 'gulp-util'], spawnNPM, cb);
-        });
+      // if package.json doesn't exist, make it
+      fs.exists(process.cwd()+'/package.json', function(fileExists) {
+        function setupNPMModules(cb2) {
+          console.log(chalk.cyan('Installing npm modules: zmq, gulp, gulp-util'));
+          return async.map(['zmq', 'gulp', 'gulp-util'], spawnNPM, cb2);
+        }
+        if (fileExists) {
+          return setupNPMModules(cb);
+        }
+        else {
+          return fs.writeFile(process.cwd()+'/package.json',"{\n}\n", 'utf8', function(err) {
+            if (err) return cb(err);
+            console.log(chalk.cyan('create:') + ' package.json' );
+            return setupNPMModules(cb);
+          });
+        }
       });
     },
     // append node_modules to .gitignore
     function(cb) {
-      console.log(chalk.cyan('Appending node_modules to .gitignore'));
+      console.log(chalk.cyan('append: `node_modules` to .gitignore'));
       var stream = fs.createWriteStream(process.cwd()+'/.gitignore', {flags: 'a'});
       stream.once('open', function(fd) {
         stream.write("node_modules\n");
