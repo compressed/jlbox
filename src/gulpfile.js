@@ -4,6 +4,7 @@ var gutil     = require('gulp-util');
 var zmq       = require('zmq');
 var spawn     = require('child_process').spawn;
 var fs        = require('fs');
+var path      = require('path');
 var file_path;
 var sock;
 var child;
@@ -61,7 +62,7 @@ gulp.task('juliaZMQ', function(){
 
 var watcher = gulp.watch([paths.tests, paths.scripts], ['juliaZMQ']);
 // regex to match any jl files in src dir
-var re      = /(.*\/)src\/(.+)\.jl/;
+var re = new RegExp("(.*"+path.sep+")src"+path.sep+"(.+)\.jl");
 
 watcher.on('change', function(event){
   if (event.type !== 'deleted') {
@@ -74,7 +75,7 @@ watcher.on('change', function(event){
     }
     // src file has been edited, find the corresponding test file
     else {
-      file_path = match[1]+'test/'+match[2]+'_test.jl';
+      file_path = match[1]+'test'+path.sep+match[2]+'_test.jl';
     }
   }
   else {
