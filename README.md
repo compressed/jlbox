@@ -69,7 +69,7 @@ For more information, please see my [blog post](http://techstrings.com/2014/02/2
 
 Running `jlbox init` will setup your project for watching julia files. It should be run in your project root. It does a few things:
 
-- Makes `test/` and `src/`' folders
+- Makes `test/` and `src/` folders
 - Creates a [`gulpfile.js`](src/gulpfile.js) and [`gulp.jl`](src/gulp.jl) file
 - Creates a `package.json` file
 - Uses npm to install: gulp, gulp-util, and zmq node packages
