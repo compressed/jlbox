@@ -13,7 +13,7 @@ var JLBOX  = 'JLBOX_MODULE';
 function printHelp() {
   console.log('The following commands are supported:');
   console.log('  init     Bootstrap project with gulp-related files');
-  console.log('  module   Add module and test files');
+  console.log('  module <model_name>  Add module and test files');
 }
 
 function initJulia(callback) {
