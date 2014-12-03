@@ -8,14 +8,15 @@ jlbox will also stub out module/test file pairs.
 
 # Dependencies
 
-In julia, ensure you have FactCheck.jl and ZMQ.jl packages installed:
+In julia, ensure you have the following packages installed:
 
 ```julia
 Pkg.add("ZMQ")
 Pkg.add("FactCheck")
+Pkg.add("Lint")
 ```
 
-Install nodejs and ZMQ
+Install nodejs and ZMQ:
 ## OS X
 I use [homebrew](http://brew.sh/):
 
