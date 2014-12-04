@@ -98,7 +98,7 @@ describe('jlbox', function() {
       fs.writeFile(path.join(outpath, '/src/Sample.jl'), "module Sample\n\nend\n", function(err) {
         if (err) return done(err);
         return jlboxEmitter.once('jlbox:done', function() {
-          should.exist(hook.captured().match(/0 facts verified/));
+          should.exist(hook.captured().match(/2 facts verified/));
           return done();
         });
       });
