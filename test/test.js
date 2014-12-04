@@ -47,7 +47,7 @@ describe('jlbox', function() {
 
   describe('jlbox watch', function() {
     before(function(done) {
-      this.timeout(15000);
+      this.timeout(60000);
       child = cp.spawn('gulp', {cwd: outpath});
       var count = 0;
       child.stdout.setEncoding('utf8');
@@ -94,7 +94,7 @@ describe('jlbox', function() {
     // NOTE: use different file names for each test, otherwise gulp/gaze will think they are the same event, given they happen so quickly, and ignore one.
     // alternatively, you can use setTimeout on each test of about 1000ms if you want to modify the same file twice
     it('should re-run test when module is changed', function(done) {
-      this.timeout(15000);
+      this.timeout(60000);
       fs.writeFile(path.join(outpath, '/src/Sample.jl'), "module Sample\n\nend\n", function(err) {
         if (err) return done(err);
         return jlboxEmitter.once('jlbox:done', function() {
@@ -105,7 +105,7 @@ describe('jlbox', function() {
     });
 
     it('should re-run test when test is changed', function(done) {
-      this.timeout(15000);
+      this.timeout(60000);
       var content = 'module SampleTest\n' +
             'include("$(pwd())/test/helper.jl")\n' +
             'reload("$(pwd())/src/Sample.jl")\n' +
@@ -124,7 +124,7 @@ describe('jlbox', function() {
     });
 
     it('should restart julia when there is a syntax error', function(done) {
-      this.timeout(15000);
+      this.timeout(60000);
       var content = 'module SampleTest2\n' +
             'include("$(pwd())/test/helper.jl")\n' +
             'facts("Sample2") do\n' +
